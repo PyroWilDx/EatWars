@@ -24,24 +24,25 @@ void AFoodPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis(FName("MoveJump"), this, &AFoodPlayer::MoveJump);
 	PlayerInputComponent->BindAxis(FName("Turn"), this, &AFoodPlayer::Turn);
 	PlayerInputComponent->BindAxis(FName("LookUp"), this, &AFoodPlayer::LookUp);
+	PlayerInputComponent->BindAxis(FName("NormalAttack"), this, &AFoodPlayer::LookUp);
 }
 
 void AFoodPlayer::MoveForward(float Value) {
-	if (Controller != nullptr && Value != 0.f) {
+	if (Value != 0.f) {
 		FVector RightVector = GetActorForwardVector();
 		AddMovementInput(RightVector, Value);
 	}
 }
 
 void AFoodPlayer::MoveRight(float Value) {
-	if (Controller != nullptr && Value != 0.f) {
+	if (Value != 0.f) {
 		FVector ForwardVector = GetActorRightVector();
 		AddMovementInput(ForwardVector, Value);
 	}
 }
 
 void AFoodPlayer::MoveJump(float Value) {
-	if (Controller != nullptr && Value != 0.f) {
+	if (Value != 0.f) {
 		Jump();
 	}
 }
@@ -52,4 +53,10 @@ void AFoodPlayer::Turn(float Value) {
 
 void AFoodPlayer::LookUp(float Value) {
 	AddControllerPitchInput(Value);
+}
+
+void AFoodPlayer::NormalAttack(float Value) {
+	if (Value != 0.f) {
+
+	}
 }

@@ -1,4 +1,6 @@
 #include "Human.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "FoodPlayer.h"
@@ -6,10 +8,18 @@
 AHuman::AHuman() {
 	PrimaryActorTick.bCanEverTick = true;
 
+    Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
+    SetRootComponent(Mesh);
+
+    CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
+    CapsuleComponent->SetupAttachment(Mesh);
+
+
 	Player = nullptr;
     MovementSpeed = 200.f;
 
     RotationSpeed = 100000.f;
+    CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &AHuman::BeginOverlap);
 }
 
 void AHuman::BeginPlay() {
@@ -44,6 +54,14 @@ void AHuman::Tick(float DeltaTime) {
 
 void AHuman::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void AHuman::BeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
+        UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
+        bool bFromSweep, const FHitResult &SweepResult) {
+    if (OtherActor == Player) {
+
+    }
 }
 
 AFoodPlayer *AHuman::GetPlayer() {
