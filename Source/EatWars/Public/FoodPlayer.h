@@ -27,6 +27,8 @@ private:
 
 	void LookUp(float Value);
 
+	void NormalAttack(float Value);
+
 public:	
 	virtual void Tick(float DeltaTime) override;
 
