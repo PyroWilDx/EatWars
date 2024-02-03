@@ -1,6 +1,8 @@
 #include "Attacks.h"
 #include "Components/CapsuleComponent.h"
 
+float AAttacks::LivingDuration = 6.f;
+
 AAttacks::AAttacks() {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -10,7 +12,9 @@ AAttacks::AAttacks() {
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	Mesh->SetupAttachment(CapsuleComponent);
 
-	damage = 0.f;
+	TimeSinceCreation = 0.f;
+
+	Damage = 0.f;
 }
 
 AAttacks::AAttacks(FName meshPath) : AAttacks() {
@@ -25,5 +29,13 @@ void AAttacks::BeginPlay() {
 
 void AAttacks::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+
+	TimeSinceCreation += DeltaTime;
+	if (TimeSinceCreation > LivingDuration) {
+		Destroy();
+	}
 }
 
+UCapsuleComponent *AAttacks::GetCapsuleComponent() {
+	return CapsuleComponent;
+}

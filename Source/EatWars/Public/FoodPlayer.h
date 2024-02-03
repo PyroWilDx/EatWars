@@ -28,7 +28,13 @@ private:
 
 	void LookUp(float Value);
 
-	void NormalAttack(float Value);
+	void ThrowAttack(float Value);
+
+	void AnvilAttack(float Value);
+
+	void DecoyAttack(float Value);
+
+	void UltAttack(float Value);
 
 public:	
 	virtual void Tick(float DeltaTime) override;
@@ -37,5 +43,25 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Attacks")
-	TSubclassOf<AAttacks> ThrowAttack;
+	TSubclassOf<AAttacks> ThrowAtkBp;
+	float ThrowAtkCd;
+	float ThrowAtkTimeAcc;
+	float ThrowAtkPositionAddZ;
+	float ThrowAtkImpulseZ;
+	float ThrowAtkStrength;
+
+	UPROPERTY(EditAnywhere, Category = "Attacks")
+	TSubclassOf<AAttacks> AnvilAtkBp;
+	float AnvilAtkCd;
+	float AnvilAtkTimeAcc;
+
+	UPROPERTY(EditAnywhere, Category = "Attacks")
+	TSubclassOf<AAttacks> DecoyAtkBp;
+	float DecoyAtkCd;
+	float DecoyAtkTimeAcc;
+
+	UPROPERTY(EditAnywhere, Category = "Attacks")
+	TSubclassOf<AAttacks> UltAtkBp;
+	float UltAtkCd;
+	float UltAtkTimeAcc;
 };
