@@ -4,11 +4,11 @@
 AAttacks::AAttacks() {
 	PrimaryActorTick.bCanEverTick = true;
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SkeletalMeshComponent"));
-	SetRootComponent(Mesh);
-
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
-	CapsuleComponent->SetupAttachment(Mesh);
+	SetRootComponent(CapsuleComponent);
+
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+	Mesh->SetupAttachment(CapsuleComponent);
 
 	damage = 0.f;
 }

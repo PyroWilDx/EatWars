@@ -1,5 +1,6 @@
 #include "FoodPlayer.h"
 #include "UObject/UObjectGlobals.h"
+#include "Attacks.h"
 
 AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 	PrimaryActorTick.bCanEverTick = true;
@@ -24,7 +25,7 @@ void AFoodPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis(FName("MoveJump"), this, &AFoodPlayer::MoveJump);
 	PlayerInputComponent->BindAxis(FName("Turn"), this, &AFoodPlayer::Turn);
 	PlayerInputComponent->BindAxis(FName("LookUp"), this, &AFoodPlayer::LookUp);
-	PlayerInputComponent->BindAxis(FName("NormalAttack"), this, &AFoodPlayer::LookUp);
+	PlayerInputComponent->BindAxis(FName("NormalAttack"), this, &AFoodPlayer::NormalAttack);
 }
 
 void AFoodPlayer::MoveForward(float Value) {
@@ -57,6 +58,8 @@ void AFoodPlayer::LookUp(float Value) {
 
 void AFoodPlayer::NormalAttack(float Value) {
 	if (Value != 0.f) {
-
+		FVector SpawnLocation = GetActorLocation();
+		SpawnLocation.Z += 60.f;
+		GetWorld()->SpawnActor<AAttacks>(ThrowAttack, SpawnLocation, FRotator::ZeroRotator);
 	}
 }
