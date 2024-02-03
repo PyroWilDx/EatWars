@@ -60,7 +60,7 @@ void AHuman::BeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *Othe
         UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
         bool bFromSweep, const FHitResult &SweepResult) {
     if (OtherActor == Player) {
-
+        Player->Destroy();
     }
 }
 
