@@ -20,12 +20,11 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION()
-	void BeginOverlap(UPrimitiveComponent *OverlappedComponent,
-		AActor *OtherActor,
-		UPrimitiveComponent *OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
+	void NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
+		UPrimitiveComponent *OtherComp, FVector NormalImpulse,
 		const FHitResult &SweepResult);
+
+	void DamageSelf(float Damage);
 
 public:
 	UPROPERTY(EditAnywhere)
@@ -43,6 +42,9 @@ private:
 
 	class AFoodPlayer *Player;
 	bool Moving;
+
+	UPROPERTY(EditAnywhere, Category = "Property")
+	float Hp;
 
 public:
 	AFoodPlayer *GetPlayer();
