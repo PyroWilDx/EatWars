@@ -15,8 +15,6 @@ public:
 
 	AAttacks(FName meshPath);
 
-	static float LivingDuration;
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -24,6 +22,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UCapsuleComponent *GetCapsuleComponent();
+
+	float GetDamage();
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
@@ -34,7 +34,10 @@ private:
 
 	float TimeSinceCreation;
 
-	UPROPERTY(EditAnywhere, Category = "Damage")
+	UPROPERTY(EditAnywhere, Category = "Property")
+	float LivingDuration;
+
+	UPROPERTY(EditAnywhere, Category = "Property")
 	float Damage;
 
 };

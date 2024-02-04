@@ -1,8 +1,6 @@
 #include "Attacks.h"
 #include "Components/CapsuleComponent.h"
 
-float AAttacks::LivingDuration = 6.f;
-
 AAttacks::AAttacks() {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -13,8 +11,12 @@ AAttacks::AAttacks() {
 	Mesh->SetupAttachment(CapsuleComponent);
 
 	TimeSinceCreation = 0.f;
+	LivingDuration = 0.f;
 
 	Damage = 0.f;
+
+	CapsuleComponent->SetGenerateOverlapEvents(false);
+	CapsuleComponent->SetNotifyRigidBodyCollision(true);
 }
 
 AAttacks::AAttacks(FName meshPath) : AAttacks() {
@@ -38,4 +40,8 @@ void AAttacks::Tick(float DeltaTime) {
 
 UCapsuleComponent *AAttacks::GetCapsuleComponent() {
 	return CapsuleComponent;
+}
+
+float AAttacks::GetDamage() {
+	return Damage;
 }

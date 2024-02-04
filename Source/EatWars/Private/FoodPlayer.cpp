@@ -12,7 +12,7 @@ AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 	ThrowAtkCd = 0.2f;
 	ThrowAtkTimeAcc = 0.f;
 	ThrowAtkPositionAddZ = 60.f;
-	ThrowAtkImpulseZ = 0.26f;
+	ThrowAtkImpulseZ = 0.2f;
 	ThrowAtkStrength = 1600.f;
 
 	AnvilAtkBp = nullptr;

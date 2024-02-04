@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "FoodPlayer.h"
+#include "Attacks.h"
 
 AHuman::AHuman() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -18,8 +19,12 @@ AHuman::AHuman() {
 	Player = nullptr;
     MovementSpeed = 200.f;
 
-    RotationSpeed = 100000.f;
-    CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &AHuman::BeginOverlap);
+    Hp = 1.f;
+
+    RotationSpeed = 60000.f;
+    CapsuleComponent->SetGenerateOverlapEvents(false);
+    CapsuleComponent->OnComponentHit.AddDynamic(this, &AHuman::NotifyHit);
+    CapsuleComponent->SetNotifyRigidBodyCollision(true);
 }
 
 void AHuman::BeginPlay() {
@@ -56,11 +61,22 @@ void AHuman::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AHuman::BeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
-        UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
-        bool bFromSweep, const FHitResult &SweepResult) {
+void AHuman::NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
+        UPrimitiveComponent *OtherComp, FVector NormalImpulse,
+        const FHitResult &SweepResult) {
     if (OtherActor == Player) {
         Player->Destroy();
+    } else if (OtherActor->IsA(AAttacks::StaticClass())) {
+        AAttacks *Atk = Cast<AAttacks>(OtherActor);
+        DamageSelf(Atk->GetDamage());
+        Atk->Destroy();
+    }
+}
+
+void AHuman::DamageSelf(float Damage) {
+    Hp -= Damage;
+    if (Hp <= 0) {
+        Destroy();
     }
 }
 
