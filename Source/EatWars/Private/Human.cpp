@@ -21,6 +21,9 @@ AHuman::AHuman() {
 
     Hp = 1.f;
 
+    HitMaterial = nullptr;
+    HitDurationLeft = 0.f;
+
     RotationSpeed = 60000.f;
     CapsuleComponent->SetGenerateOverlapEvents(false);
     CapsuleComponent->OnComponentHit.AddDynamic(this, &AHuman::NotifyHit);
@@ -31,6 +34,8 @@ void AHuman::BeginPlay() {
 	Super::BeginPlay();
 
 	Player = Cast<AFoodPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+    OriginalMaterial = Mesh->GetMaterial(0);
 }
 
 void AHuman::Tick(float DeltaTime) {
@@ -55,6 +60,13 @@ void AHuman::Tick(float DeltaTime) {
         TargetRotation.Yaw -= 90.f;
         SetActorRotation(TargetRotation);
     }
+
+    if (HitDurationLeft > 0) {
+        HitDurationLeft -= DeltaTime;
+        if (HitDurationLeft <= 0) {
+            Mesh->SetMaterial(0, OriginalMaterial);
+        }
+    }
 }
 
 void AHuman::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
@@ -68,8 +80,10 @@ void AHuman::NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherAc
         Player->Destroy();
     } else if (OtherActor->IsA(AAttacks::StaticClass())) {
         AAttacks *Atk = Cast<AAttacks>(OtherActor);
-        DamageSelf(Atk->GetDamage());
+        Mesh->SetMaterial(0, HitMaterial);
+        HitDurationLeft = HIT_DURATION_TIME;
         Atk->Destroy();
+        DamageSelf(Atk->GetDamage());
     }
 }
 
