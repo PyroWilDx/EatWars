@@ -4,6 +4,8 @@
 #include "GameFramework/Pawn.h"
 #include "Human.generated.h"
 
+#define HIT_DURATION_TIME 0.1f
+
 UCLASS()
 class EATWARS_API AHuman : public APawn {
 	GENERATED_BODY()
@@ -45,6 +47,13 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Property")
 	float Hp;
+
+	UPROPERTY(EditAnywhere, Category = "Visuals")
+	UMaterialInterface *HitMaterial;
+
+	UMaterialInterface *OriginalMaterial;
+
+	float HitDurationLeft;
 
 public:
 	AFoodPlayer *GetPlayer();
