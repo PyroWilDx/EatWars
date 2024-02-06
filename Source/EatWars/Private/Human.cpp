@@ -80,9 +80,10 @@ void AHuman::NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherAc
         Player->Destroy();
     } else if (OtherActor->IsA(AAttacks::StaticClass())) {
         AAttacks *Atk = Cast<AAttacks>(OtherActor);
+        if (Atk->GetHasHit()) return;
+        Atk->SetHasHitTrue();
         Mesh->SetMaterial(0, HitMaterial);
         HitDurationLeft = HIT_DURATION_TIME;
-        Atk->Destroy();
         DamageSelf(Atk->GetDamage());
     }
 }

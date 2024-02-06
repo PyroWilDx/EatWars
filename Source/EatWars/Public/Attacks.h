@@ -15,15 +15,23 @@ public:
 
 	AAttacks(FName meshPath);
 
-protected:
-	virtual void BeginPlay() override;
-
-public:	
 	virtual void Tick(float DeltaTime) override;
+
+	//UFUNCTION()
+	//void NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
+	//	UPrimitiveComponent *OtherComp, FVector NormalImpulse,
+	//	const FHitResult &SweepResult);
 
 	UCapsuleComponent *GetCapsuleComponent();
 
 	float GetDamage();
+
+	void SetHasHitTrue();
+
+	bool GetHasHit();
+
+protected:
+	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
@@ -39,5 +47,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Property")
 	float Damage;
+
+	bool HasHit;
 
 };
