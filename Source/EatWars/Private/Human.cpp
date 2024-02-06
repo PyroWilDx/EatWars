@@ -17,7 +17,7 @@ AHuman::AHuman() {
 
 
 	Player = nullptr;
-    MovementSpeed = 200.f;
+    MovementSpeed = 600.f;
 
     Hp = 1.f;
 
