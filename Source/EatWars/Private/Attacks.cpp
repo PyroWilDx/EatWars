@@ -1,5 +1,7 @@
 #include "Attacks.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/PrimitiveComponent.h"
+#include "FoodPlayer.h"
 
 AAttacks::AAttacks() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -15,7 +17,10 @@ AAttacks::AAttacks() {
 
 	Damage = 0.f;
 
+	HasHit = false;
+
 	CapsuleComponent->SetGenerateOverlapEvents(false);
+	//CapsuleComponent->OnComponentHit.AddDynamic(this, &AAttacks::NotifyHit);
 	CapsuleComponent->SetNotifyRigidBodyCollision(true);
 }
 
@@ -38,10 +43,24 @@ void AAttacks::Tick(float DeltaTime) {
 	}
 }
 
+//void AAttacks::NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
+//		UPrimitiveComponent *OtherComp, FVector NormalImpulse,
+//		const FHitResult &SweepResult) {
+//		HasHit = true;
+//}
+
 UCapsuleComponent *AAttacks::GetCapsuleComponent() {
 	return CapsuleComponent;
 }
 
 float AAttacks::GetDamage() {
 	return Damage;
+}
+
+void AAttacks::SetHasHitTrue() {
+	HasHit = true;
+}
+
+bool AAttacks::GetHasHit() {
+	return HasHit;
 }

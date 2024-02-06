@@ -6,6 +6,8 @@
 
 #define HIT_DURATION_TIME 0.1f
 
+class AFoodPlayer;
+
 UCLASS()
 class EATWARS_API AHuman : public APawn {
 	GENERATED_BODY()
@@ -13,13 +15,9 @@ class EATWARS_API AHuman : public APawn {
 public:
 	AHuman();
 
-protected:
-	virtual void BeginPlay() override;
-
-public:	
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
 	UFUNCTION()
 	void NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
@@ -28,12 +26,18 @@ public:
 
 	void DamageSelf(float Damage);
 
-public:
+	AFoodPlayer *GetPlayer();
+
+	bool IsMoving();
+
 	UPROPERTY(EditAnywhere)
 	float MovementSpeed;
 
 	UPROPERTY(EditAnywhere)
 	float RotationSpeed;
+
+protected:
+	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
@@ -55,8 +59,4 @@ private:
 
 	float HitDurationLeft;
 
-public:
-	AFoodPlayer *GetPlayer();
-
-	bool IsMoving();
 };

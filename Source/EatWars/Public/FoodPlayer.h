@@ -14,6 +14,10 @@ class EATWARS_API AFoodPlayer : public ACharacter {
 public:
 	AFoodPlayer(const FObjectInitializer &ObjectInitializer = FObjectInitializer::Get());
 
+	virtual void Tick(float DeltaTime) override;
+
+	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -36,12 +40,6 @@ private:
 
 	void UltAttack(float Value);
 
-public:	
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-private:
 	UPROPERTY(EditAnywhere, Category = "Attacks")
 	TSubclassOf<AAttacks> ThrowAtkBp;
 	float ThrowAtkCd;
