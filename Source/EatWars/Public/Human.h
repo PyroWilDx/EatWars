@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Character.h"
 #include "Human.generated.h"
 
 #define HIT_DURATION_TIME 0.1f
@@ -11,7 +11,7 @@ class UHealthBarComponent;
 class AFoodPlayer;
 
 UCLASS()
-class EATWARS_API AHuman : public APawn {
+class EATWARS_API AHuman : public ACharacter {
 	GENERATED_BODY()
 
 public:
@@ -28,6 +28,7 @@ public:
 
 	void DamageSelf(float Damage);
 
+	UFUNCTION(BlueprintCallable)
 	AFoodPlayer *GetPlayer();
 
 	bool IsMoving();
@@ -44,12 +45,6 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	UCapsuleComponent *CapsuleComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	USkeletalMeshComponent *Mesh;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UHealthBarComponent *HealthBarComponent;
 
