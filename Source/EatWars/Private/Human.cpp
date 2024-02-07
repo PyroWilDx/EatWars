@@ -5,6 +5,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "FoodPlayer.h"
 #include "Attacks.h"
+#include "HealthBarComponent.h"
 
 AHuman::AHuman() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -13,13 +14,15 @@ AHuman::AHuman() {
     SetRootComponent(Mesh);
 
     CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
-    CapsuleComponent->SetupAttachment(Mesh);
+    CapsuleComponent->SetupAttachment(GetRootComponent());
 
+    HealthBarComponent = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBarComponent"));
+    HealthBarComponent->SetupAttachment(GetRootComponent());
 
 	Player = nullptr;
-    MovementSpeed = 600.f;
+    MovementSpeed = 300.f;
 
-    Hp = 1.f;
+    Hp = 0.f;
 
     HitMaterial = nullptr;
     HitDurationLeft = 0.f;
@@ -28,14 +31,17 @@ AHuman::AHuman() {
     CapsuleComponent->SetGenerateOverlapEvents(false);
     CapsuleComponent->OnComponentHit.AddDynamic(this, &AHuman::NotifyHit);
     CapsuleComponent->SetNotifyRigidBodyCollision(true);
+    CapsuleComponent->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 }
 
 void AHuman::BeginPlay() {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
-	Player = Cast<AFoodPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    Player = Cast<AFoodPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
     OriginalMaterial = Mesh->GetMaterial(0);
+
+    SetHp(1.f);
 }
 
 void AHuman::Tick(float DeltaTime) {
@@ -89,10 +95,10 @@ void AHuman::NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherAc
 }
 
 void AHuman::DamageSelf(float Damage) {
-    Hp -= Damage;
-    if (Hp <= 0) {
+    if (Hp - Damage <= 0) {
         Destroy();
     }
+    SetHp(Hp - Damage);
 }
 
 AFoodPlayer *AHuman::GetPlayer() {
@@ -103,3 +109,7 @@ bool AHuman::IsMoving() {
     return Moving;
 }
 
+void AHuman::SetHp(float Value) {
+    Hp = Value;
+    HealthBarComponent->SetHealthPercent(Hp);
+}
