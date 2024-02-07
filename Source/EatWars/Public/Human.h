@@ -35,12 +35,6 @@ public:
 
 	void SetHp(float Value);
 
-	UPROPERTY(EditAnywhere)
-	float MovementSpeed;
-
-	UPROPERTY(EditAnywhere)
-	float RotationSpeed;
-
 protected:
 	virtual void BeginPlay() override;
 

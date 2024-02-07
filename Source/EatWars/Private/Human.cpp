@@ -26,14 +26,12 @@ AHuman::AHuman() {
     HealthBarComponent->SetupAttachment(GetRootComponent());
 
 	Player = nullptr;
-    MovementSpeed = 300.f;
+    Moving = true;
 
     Hp = 0.f;
 
     HitMaterial = nullptr;
     HitDurationLeft = 0.f;
-
-    RotationSpeed = 60000.f;
 }
 
 void AHuman::BeginPlay() {
@@ -48,19 +46,6 @@ void AHuman::BeginPlay() {
 
 void AHuman::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-
-    if (Player) {
-        FVector PlayerLocation = Player->GetActorLocation();
-        FVector Location = GetActorLocation();
-        FRotator Rotation = GetActorRotation();
-
-        FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Location, PlayerLocation);
-        FRotator TargetRotation = FMath::RInterpTo(Rotation, LookAtRotation, DeltaTime, RotationSpeed);
-        TargetRotation.Pitch = Rotation.Pitch;
-        TargetRotation.Roll = Rotation.Roll;
-        TargetRotation.Yaw -= 90.f;
-        SetActorRotation(TargetRotation);
-    }
 
     if (HitDurationLeft > 0) {
         HitDurationLeft -= DeltaTime;
