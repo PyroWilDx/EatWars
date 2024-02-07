@@ -10,11 +10,17 @@
 AHuman::AHuman() {
 	PrimaryActorTick.bCanEverTick = true;
 
-    Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
-    SetRootComponent(Mesh);
+    GetMesh()->SetGenerateOverlapEvents(false);
+    GetMesh()->SetNotifyRigidBodyCollision(true);
+    GetMesh()->OnComponentHit.AddDynamic(this, &AHuman::NotifyHit);
+    GetMesh()->SetCollisionObjectType(ECC_WorldDynamic);
+    GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+    GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
-    CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
-    CapsuleComponent->SetupAttachment(GetRootComponent());
+    GetCapsuleComponent()->SetGenerateOverlapEvents(false);
+    GetCapsuleComponent()->SetNotifyRigidBodyCollision(true);
+    GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AHuman::NotifyHit);
+    GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
     HealthBarComponent = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBarComponent"));
     HealthBarComponent->SetupAttachment(GetRootComponent());
@@ -28,10 +34,6 @@ AHuman::AHuman() {
     HitDurationLeft = 0.f;
 
     RotationSpeed = 60000.f;
-    CapsuleComponent->SetGenerateOverlapEvents(false);
-    CapsuleComponent->OnComponentHit.AddDynamic(this, &AHuman::NotifyHit);
-    CapsuleComponent->SetNotifyRigidBodyCollision(true);
-    CapsuleComponent->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 }
 
 void AHuman::BeginPlay() {
@@ -39,7 +41,7 @@ void AHuman::BeginPlay() {
 
     Player = Cast<AFoodPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
-    OriginalMaterial = Mesh->GetMaterial(0);
+    OriginalMaterial = GetMesh()->GetMaterial(0);
 
     SetHp(1.f);
 }
@@ -52,13 +54,6 @@ void AHuman::Tick(float DeltaTime) {
         FVector Location = GetActorLocation();
         FRotator Rotation = GetActorRotation();
 
-        FVector Direction = PlayerLocation - Location;
-        Direction.Normalize();
-        FVector TargetLocation = Location + Direction * MovementSpeed * DeltaTime;
-        TargetLocation.Z = Location.Z;
-        SetActorLocation(TargetLocation);
-        Moving = true;
-
         FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Location, PlayerLocation);
         FRotator TargetRotation = FMath::RInterpTo(Rotation, LookAtRotation, DeltaTime, RotationSpeed);
         TargetRotation.Pitch = Rotation.Pitch;
@@ -70,7 +65,7 @@ void AHuman::Tick(float DeltaTime) {
     if (HitDurationLeft > 0) {
         HitDurationLeft -= DeltaTime;
         if (HitDurationLeft <= 0) {
-            Mesh->SetMaterial(0, OriginalMaterial);
+            GetMesh()->SetMaterial(0, OriginalMaterial);
         }
     }
 }
@@ -88,7 +83,7 @@ void AHuman::NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherAc
         AAttacks *Atk = Cast<AAttacks>(OtherActor);
         if (Atk->GetHasHit()) return;
         Atk->SetHasHitTrue();
-        Mesh->SetMaterial(0, HitMaterial);
+        GetMesh()->SetMaterial(0, HitMaterial);
         HitDurationLeft = HIT_DURATION_TIME;
         DamageSelf(Atk->GetDamage());
     }
