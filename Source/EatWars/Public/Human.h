@@ -6,6 +6,8 @@
 
 #define HIT_DURATION_TIME 0.1f
 
+class UCapsuleComponent;
+class UHealthBarComponent;
 class AFoodPlayer;
 
 UCLASS()
@@ -30,6 +32,8 @@ public:
 
 	bool IsMoving();
 
+	void SetHp(float Value);
+
 	UPROPERTY(EditAnywhere)
 	float MovementSpeed;
 
@@ -41,12 +45,15 @@ protected:
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	class UCapsuleComponent *CapsuleComponent;
+	UCapsuleComponent *CapsuleComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent *Mesh;
 
-	class AFoodPlayer *Player;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UHealthBarComponent *HealthBarComponent;
+
+	AFoodPlayer *Player;
 	bool Moving;
 
 	UPROPERTY(EditAnywhere, Category = "Property")
