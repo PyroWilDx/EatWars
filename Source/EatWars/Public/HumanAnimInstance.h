@@ -17,7 +17,7 @@ public:
 	class AHuman *Human;
 
 	UPROPERTY(BlueprintReadOnly)
-	FVector PlayerLocation;
+	FVector ClosestFoodLocation;
 
 	UPROPERTY(BlueprintReadOnly)
 	bool IsMoving;

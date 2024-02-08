@@ -12,8 +12,11 @@ void UHumanAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 	Super::NativeUpdateAnimation(DeltaTime);
 
 	if (Human) {
-		if (Human->GetPlayer()) {
-			PlayerLocation = Human->GetPlayer()->GetActorLocation();
+		AActor *ClosestFood = Human->GetClosestFood();
+		if (ClosestFood != nullptr) {
+			ClosestFoodLocation = ClosestFood->GetActorLocation();
+		} else {
+			ClosestFoodLocation = Human->GetActorLocation();
 		}
 		IsMoving = Human->IsMoving();
 	}

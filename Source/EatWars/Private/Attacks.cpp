@@ -12,16 +12,18 @@ AAttacks::AAttacks() {
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	Mesh->SetupAttachment(CapsuleComponent);
 
+	CapsuleComponent->SetSimulatePhysics(true);
+	CapsuleComponent->SetGenerateOverlapEvents(false);
+	CapsuleComponent->SetNotifyRigidBodyCollision(true);
+
+	Mesh->SetGenerateOverlapEvents(false);
+
 	TimeSinceCreation = 0.f;
 	LivingDuration = 0.f;
 
 	Damage = 0.f;
 
 	HasHit = false;
-
-	CapsuleComponent->SetGenerateOverlapEvents(false);
-	//CapsuleComponent->OnComponentHit.AddDynamic(this, &AAttacks::NotifyHit);
-	CapsuleComponent->SetNotifyRigidBodyCollision(true);
 }
 
 AAttacks::AAttacks(FName meshPath) : AAttacks() {
@@ -42,12 +44,6 @@ void AAttacks::Tick(float DeltaTime) {
 		Destroy();
 	}
 }
-
-//void AAttacks::NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
-//		UPrimitiveComponent *OtherComp, FVector NormalImpulse,
-//		const FHitResult &SweepResult) {
-//		HasHit = true;
-//}
 
 UCapsuleComponent *AAttacks::GetCapsuleComponent() {
 	return CapsuleComponent;

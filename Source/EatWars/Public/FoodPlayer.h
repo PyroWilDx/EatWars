@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_set>
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "FoodPlayer.generated.h"
@@ -17,6 +18,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable)
+	AActor *GetClosestFoodFromActor(AActor *Actor);
 
 protected:
 	virtual void BeginPlay() override;
@@ -57,6 +61,8 @@ private:
 	TSubclassOf<AAttacks> DecoyAtkBp;
 	float DecoyAtkCd;
 	float DecoyAtkTimeAcc;
+	float DecoyAtkPositionAddZ;
+	std::unordered_set<AAttacks *> DecoyAtkSet;
 
 	UPROPERTY(EditAnywhere, Category = "Attacks")
 	TSubclassOf<AAttacks> UltAtkBp;

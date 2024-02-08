@@ -17,11 +17,6 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	//UFUNCTION()
-	//void NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
-	//	UPrimitiveComponent *OtherComp, FVector NormalImpulse,
-	//	const FHitResult &SweepResult);
-
 	UCapsuleComponent *GetCapsuleComponent();
 
 	float GetDamage();

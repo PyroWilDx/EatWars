@@ -85,6 +85,13 @@ AFoodPlayer *AHuman::GetPlayer() {
     return Player;
 }
 
+AActor *AHuman::GetClosestFood() {
+    if (Player != nullptr) {
+        return Player->GetClosestFoodFromActor(this);
+    }
+    return nullptr;
+}
+
 bool AHuman::IsMoving() {
     return Moving;
 }
