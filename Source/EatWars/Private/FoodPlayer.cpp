@@ -2,6 +2,7 @@
 #include "UObject/UObjectGlobals.h"
 #include "Components/CapsuleComponent.h"
 #include "Attacks.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 	PrimaryActorTick.bCanEverTick = true;
@@ -22,10 +23,16 @@ AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 	DecoyAtkBp = nullptr;
 	DecoyAtkCd = 1.0f;
 	DecoyAtkTimeAcc = 0.f;
+	DecoyAtkPositionAddZ = 160.f;
 
 	UltAtkBp = nullptr;
 	UltAtkCd = 1.0f;
 	UltAtkTimeAcc = 0.f;
+
+	GetCharacterMovement()->GravityScale = 2.f;
+	GetCharacterMovement()->JumpZVelocity = 800.f;
+	GetCharacterMovement()->BrakingDecelerationFalling = 2000.f;
+	GetCharacterMovement()->AirControl = 0.82f;
 }
 
 void AFoodPlayer::BeginPlay() {
@@ -34,7 +41,6 @@ void AFoodPlayer::BeginPlay() {
 
 void AFoodPlayer::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-
 }
 
 void AFoodPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
@@ -115,7 +121,12 @@ void AFoodPlayer::DecoyAttack(float Value) {
 	DecoyAtkTimeAcc += DeltaTime;
 	if (Value != 0.f) {
 		if (DecoyAtkTimeAcc > DecoyAtkCd) {
-
+			FVector SpawnLocation = GetActorLocation();
+			SpawnLocation.Z += DecoyAtkPositionAddZ;
+			FRotator SpawnRotation = FRotator::ZeroRotator;
+			AAttacks *Spawned = World->SpawnActor<AAttacks>(DecoyAtkBp, SpawnLocation, SpawnRotation);
+			DecoyAtkSet.insert(Spawned);
+			DecoyAtkTimeAcc = 0.f;
 		}
 	}
 }
@@ -129,4 +140,17 @@ void AFoodPlayer::UltAttack(float Value) {
 
 		}
 	}
+}
+
+AActor *AFoodPlayer::GetClosestFoodFromActor(AActor *Actor) {
+	AActor *ClosestFood = this;
+	float MinDist = Actor->GetDistanceTo(this);
+	for (AActor *DecoyAtk : DecoyAtkSet) {
+		float CurrDist = Actor->GetDistanceTo(DecoyAtk);
+		if (CurrDist < MinDist) {
+			ClosestFood = DecoyAtk;
+			MinDist = CurrDist;
+		}
+	}
+	return ClosestFood;
 }

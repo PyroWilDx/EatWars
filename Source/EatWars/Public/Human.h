@@ -28,8 +28,10 @@ public:
 
 	void DamageSelf(float Damage);
 
-	UFUNCTION(BlueprintCallable)
 	AFoodPlayer *GetPlayer();
+
+	UFUNCTION(BlueprintCallable)
+	AActor *GetClosestFood();
 
 	bool IsMoving();
 
