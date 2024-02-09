@@ -6,14 +6,13 @@
 #include "FoodPlayer.h"
 #include "Attacks.h"
 #include "HealthBarComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AHuman::AHuman() {
 	PrimaryActorTick.bCanEverTick = true;
 
     GetMesh()->SetGenerateOverlapEvents(false);
-    GetMesh()->SetNotifyRigidBodyCollision(true);
-    GetMesh()->OnComponentHit.AddDynamic(this, &AHuman::NotifyHit);
-    GetMesh()->SetCollisionObjectType(ECC_WorldDynamic);
+    GetMesh()->SetNotifyRigidBodyCollision(false);
     GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
     GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
@@ -21,6 +20,8 @@ AHuman::AHuman() {
     GetCapsuleComponent()->SetNotifyRigidBodyCollision(true);
     GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AHuman::NotifyHit);
     GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+
+    GetCharacterMovement()->StandingDownwardForceScale = 0.2f;
 
     HealthBarComponent = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBarComponent"));
     HealthBarComponent->SetupAttachment(GetRootComponent());
@@ -66,19 +67,23 @@ void AHuman::NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherAc
         Player->Destroy();
     } else if (OtherActor->IsA(AAttacks::StaticClass())) {
         AAttacks *Atk = Cast<AAttacks>(OtherActor);
-        if (Atk->GetHasHit()) return;
-        Atk->SetHasHitTrue();
-        GetMesh()->SetMaterial(0, HitMaterial);
-        HitDurationLeft = HIT_DURATION_TIME;
+        if (!Atk->ShouldHit()) return;
+        bool DestroyAtk = Atk->IncrHitCount();
         DamageSelf(Atk->GetDamage());
+        if (DestroyAtk) Atk->Destroy();
     }
 }
 
 void AHuman::DamageSelf(float Damage) {
     if (Hp - Damage <= 0) {
         Destroy();
+        return;
     }
+    if (Damage > 0) GetMesh()->SetMaterial(0, HitMaterial);
+    if (Damage < 0) GetMesh()->SetMaterial(0, HealMaterial);
+    HitDurationLeft = HIT_DURATION_TIME;
     SetHp(Hp - Damage);
+    Hp = std::min(Hp, 1.f);
 }
 
 AFoodPlayer *AHuman::GetPlayer() {

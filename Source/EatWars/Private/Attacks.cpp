@@ -18,12 +18,15 @@ AAttacks::AAttacks() {
 
 	Mesh->SetGenerateOverlapEvents(false);
 
-	TimeSinceCreation = 0.f;
+	DestroyAfterMaxHit = false;
+
 	LivingDuration = 0.f;
+	TimeSinceCreation = 0.f;
 
 	Damage = 0.f;
 
-	HasHit = false;
+	MaxHitCount = 1;
+	HitCount = 0;
 }
 
 AAttacks::AAttacks(FName meshPath) : AAttacks() {
@@ -49,14 +52,19 @@ UCapsuleComponent *AAttacks::GetCapsuleComponent() {
 	return CapsuleComponent;
 }
 
+void AAttacks::SetThrower(AFoodPlayer *Value) {
+	Thrower = Value;
+}
+
 float AAttacks::GetDamage() {
 	return Damage;
 }
 
-void AAttacks::SetHasHitTrue() {
-	HasHit = true;
+bool AAttacks::IncrHitCount() {
+	HitCount++;
+	return HitCount >= MaxHitCount;
 }
 
-bool AAttacks::GetHasHit() {
-	return HasHit;
+bool AAttacks::ShouldHit() {
+	return HitCount < MaxHitCount;
 }
