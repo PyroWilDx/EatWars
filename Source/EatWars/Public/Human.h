@@ -4,7 +4,7 @@
 #include "GameFramework/Character.h"
 #include "Human.generated.h"
 
-#define HIT_DURATION_TIME 0.1f
+#define HIT_DURATION_TIME 0.12f
 
 class UCapsuleComponent;
 class UHealthBarComponent;
@@ -52,6 +52,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Visuals")
 	UMaterialInterface *HitMaterial;
+
+	UPROPERTY(EditAnywhere, Category = "Visuals")
+	UMaterialInterface *HealMaterial;
 
 	UMaterialInterface *OriginalMaterial;
 

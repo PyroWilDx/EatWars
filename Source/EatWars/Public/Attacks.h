@@ -5,6 +5,7 @@
 #include "Attacks.generated.h"
 
 class UCapsuleComponent;
+class AFoodPlayer;
 
 UCLASS()
 class EATWARS_API AAttacks : public AActor {
@@ -19,11 +20,13 @@ public:
 
 	UCapsuleComponent *GetCapsuleComponent();
 
+	void SetThrower(AFoodPlayer *Value);
+
 	float GetDamage();
 
-	void SetHasHitTrue();
+	bool IncrHitCount();
 
-	bool GetHasHit();
+	bool ShouldHit();
 
 protected:
 	virtual void BeginPlay() override;
@@ -35,14 +38,21 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent *Mesh;
 
-	float TimeSinceCreation;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	AFoodPlayer *Thrower;
+
+	UPROPERTY(EditAnywhere, Category = "Property")
+	bool DestroyAfterMaxHit;
 
 	UPROPERTY(EditAnywhere, Category = "Property")
 	float LivingDuration;
+	float TimeSinceCreation;
 
 	UPROPERTY(EditAnywhere, Category = "Property")
 	float Damage;
 
-	bool HasHit;
+	UPROPERTY(EditAnywhere, Category = "Property")
+	int MaxHitCount;
+	int HitCount;
 
 };

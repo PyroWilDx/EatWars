@@ -22,6 +22,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	AActor *GetClosestFoodFromActor(AActor *Actor);
 
+	UFUNCTION(BlueprintCallable)
+	void RemoveDecoyAtk(AAttacks *DecoyAtk);
+
 protected:
 	virtual void BeginPlay() override;
 

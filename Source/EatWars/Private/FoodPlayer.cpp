@@ -7,6 +7,12 @@
 AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 	PrimaryActorTick.bCanEverTick = true;
 
+	GetCharacterMovement()->GravityScale = 2.f;
+	GetCharacterMovement()->JumpZVelocity = 800.f;
+	GetCharacterMovement()->BrakingDecelerationFalling = 2000.f;
+	GetCharacterMovement()->AirControl = 0.82f;
+	GetCharacterMovement()->StandingDownwardForceScale = 0.2f;
+
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 	ThrowAtkBp = nullptr;
@@ -28,11 +34,6 @@ AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 	UltAtkBp = nullptr;
 	UltAtkCd = 1.0f;
 	UltAtkTimeAcc = 0.f;
-
-	GetCharacterMovement()->GravityScale = 2.f;
-	GetCharacterMovement()->JumpZVelocity = 800.f;
-	GetCharacterMovement()->BrakingDecelerationFalling = 2000.f;
-	GetCharacterMovement()->AirControl = 0.82f;
 }
 
 void AFoodPlayer::BeginPlay() {
@@ -125,6 +126,7 @@ void AFoodPlayer::DecoyAttack(float Value) {
 			SpawnLocation.Z += DecoyAtkPositionAddZ;
 			FRotator SpawnRotation = FRotator::ZeroRotator;
 			AAttacks *Spawned = World->SpawnActor<AAttacks>(DecoyAtkBp, SpawnLocation, SpawnRotation);
+			Spawned->SetThrower(this);
 			DecoyAtkSet.insert(Spawned);
 			DecoyAtkTimeAcc = 0.f;
 		}
@@ -153,4 +155,8 @@ AActor *AFoodPlayer::GetClosestFoodFromActor(AActor *Actor) {
 		}
 	}
 	return ClosestFood;
+}
+
+void AFoodPlayer::RemoveDecoyAtk(AAttacks *DecoyAtk) {
+	DecoyAtkSet.erase(DecoyAtk);
 }
