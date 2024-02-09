@@ -43,7 +43,8 @@ void AAttacks::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
 	TimeSinceCreation += DeltaTime;
-	if (TimeSinceCreation > LivingDuration) {
+	if ((TimeSinceCreation > LivingDuration)
+		|| (DestroyAfterMaxHit && HitCount >= MaxHitCount)) {
 		Destroy();
 	}
 }
@@ -60,9 +61,8 @@ float AAttacks::GetDamage() {
 	return Damage;
 }
 
-bool AAttacks::IncrHitCount() {
+void AAttacks::IncrHitCount() {
 	HitCount++;
-	return HitCount >= MaxHitCount;
 }
 
 bool AAttacks::ShouldHit() {

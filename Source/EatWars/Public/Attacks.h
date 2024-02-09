@@ -24,7 +24,7 @@ public:
 
 	float GetDamage();
 
-	bool IncrHitCount();
+	void IncrHitCount();
 
 	bool ShouldHit();
 
