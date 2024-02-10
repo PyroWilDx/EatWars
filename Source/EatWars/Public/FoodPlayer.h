@@ -5,8 +5,11 @@
 #include "GameFramework/Character.h"
 #include "FoodPlayer.generated.h"
 
+#define ATK_IMG_ALPHA 0.42f
+
 class FObjectInitializer;
 class AAttacks;
+class UEatWarsOverlay;
 
 UCLASS()
 class EATWARS_API AFoodPlayer : public ACharacter {
@@ -46,6 +49,10 @@ private:
 	void DecoyAttack(float Value);
 
 	void UltAttack(float Value);
+
+	UPROPERTY(EditAnyWhere)
+	TSubclassOf<UEatWarsOverlay> EatWarsOverlayBP;
+	UEatWarsOverlay *EatWarsOverlay;
 
 	UPROPERTY(EditAnywhere, Category = "Attacks")
 	TSubclassOf<AAttacks> ThrowAtkBp;
