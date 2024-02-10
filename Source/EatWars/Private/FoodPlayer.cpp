@@ -3,6 +3,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Attacks.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "EatWarsOverlay.h"
 
 AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 	PrimaryActorTick.bCanEverTick = true;
@@ -15,34 +16,57 @@ AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
+	EatWarsOverlayBP = nullptr;
+	EatWarsOverlay = nullptr;
+
 	ThrowAtkBp = nullptr;
 	ThrowAtkCd = 0.2f;
-	ThrowAtkTimeAcc = 0.f;
+	ThrowAtkTimeAcc = ThrowAtkTimeAcc;
 	ThrowAtkPositionAddZ = 100.f;
 	ThrowAtkImpulseZ = 0.2f;
 	ThrowAtkStrength = 1600.f;
 
 	AnvilAtkBp = nullptr;
 	AnvilAtkCd = 1.0f;
-	AnvilAtkTimeAcc = 0.f;
+	AnvilAtkTimeAcc = AnvilAtkCd;
 
 	DecoyAtkBp = nullptr;
 	DecoyAtkCd = 1.0f;
-	DecoyAtkTimeAcc = 0.f;
+	DecoyAtkTimeAcc = DecoyAtkCd;
 	DecoyAtkPositionAddZ = 160.f;
 	DecoyAtkStrength = 30.f;
 
 	UltAtkBp = nullptr;
 	UltAtkCd = 1.0f;
-	UltAtkTimeAcc = 0.f;
+	UltAtkTimeAcc = UltAtkCd;
 }
 
 void AFoodPlayer::BeginPlay() {
 	Super::BeginPlay();
+
+	if (EatWarsOverlayBP != nullptr) {
+		EatWarsOverlay = CreateWidget<UEatWarsOverlay>(GetWorld(), EatWarsOverlayBP);
+		EatWarsOverlay->AddToViewport();
+	}
 }
 
 void AFoodPlayer::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+
+	if (EatWarsOverlay != nullptr) {
+		if (DecoyAtkTimeAcc < DecoyAtkCd) {
+			EatWarsOverlay->SetSkillCdPercent(1.f - DecoyAtkTimeAcc / DecoyAtkCd);
+		} else {
+			EatWarsOverlay->SetSkillImgAlpha(1.f);
+			EatWarsOverlay->SetSkillCdPercent(0.f);
+		}
+		if (UltAtkTimeAcc < UltAtkCd) {
+			EatWarsOverlay->SetUltimateCdPercent(1.f - UltAtkTimeAcc / UltAtkCd);
+		} else {
+			EatWarsOverlay->SetUltimateImgAlpha(1.f);
+			EatWarsOverlay->SetUltimateCdPercent(0.f);
+		}
+	}
 }
 
 void AFoodPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
@@ -92,7 +116,7 @@ void AFoodPlayer::ThrowAttack(float Value) {
 	float DeltaTime = World->GetDeltaSeconds();
 	ThrowAtkTimeAcc += DeltaTime;
 	if (Value != 0.f) {
-		if (ThrowAtkTimeAcc > ThrowAtkCd) {
+		if (ThrowAtkTimeAcc >= ThrowAtkCd) {
 			FVector SpawnLocation = GetActorLocation();
 			SpawnLocation.Z += ThrowAtkPositionAddZ;
 			FRotator SpawnRotation = FRotator::ZeroRotator;
@@ -111,7 +135,7 @@ void AFoodPlayer::AnvilAttack(float Value) {
 	float DeltaTime = World->GetDeltaSeconds();
 	AnvilAtkTimeAcc += DeltaTime;
 	if (Value != 0.f) {
-		if (AnvilAtkTimeAcc > AnvilAtkCd) {
+		if (AnvilAtkTimeAcc >= AnvilAtkCd) {
 
 		}
 	}
@@ -122,7 +146,7 @@ void AFoodPlayer::DecoyAttack(float Value) {
 	float DeltaTime = World->GetDeltaSeconds();
 	DecoyAtkTimeAcc += DeltaTime;
 	if (Value != 0.f) {
-		if (DecoyAtkTimeAcc > DecoyAtkCd) {
+		if (DecoyAtkTimeAcc >= DecoyAtkCd) {
 			FVector SpawnLocation = GetActorLocation();
 			SpawnLocation.Z += DecoyAtkPositionAddZ;
 			FRotator SpawnRotation = FRotator::ZeroRotator;
@@ -132,6 +156,9 @@ void AFoodPlayer::DecoyAttack(float Value) {
 			FVector ImpulseDirection = GetActorForwardVector();
 			ImpulseDirection.Normalize();
 			Spawned->GetCapsuleComponent()->AddImpulse(ImpulseDirection * DecoyAtkStrength, NAME_None, true);
+			if (EatWarsOverlay != nullptr) {
+				EatWarsOverlay->SetSkillImgAlpha(ATK_IMG_ALPHA);
+			}
 			DecoyAtkTimeAcc = 0.f;
 		}
 	}
@@ -142,7 +169,7 @@ void AFoodPlayer::UltAttack(float Value) {
 	float DeltaTime = World->GetDeltaSeconds();
 	UltAtkTimeAcc += DeltaTime;
 	if (Value != 0.f) {
-		if (UltAtkTimeAcc > UltAtkCd) {
+		if (UltAtkTimeAcc >= UltAtkCd) {
 
 		}
 	}
