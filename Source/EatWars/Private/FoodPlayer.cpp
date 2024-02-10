@@ -18,7 +18,7 @@ AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 	ThrowAtkBp = nullptr;
 	ThrowAtkCd = 0.2f;
 	ThrowAtkTimeAcc = 0.f;
-	ThrowAtkPositionAddZ = 60.f;
+	ThrowAtkPositionAddZ = 100.f;
 	ThrowAtkImpulseZ = 0.2f;
 	ThrowAtkStrength = 1600.f;
 
@@ -30,6 +30,7 @@ AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 	DecoyAtkCd = 1.0f;
 	DecoyAtkTimeAcc = 0.f;
 	DecoyAtkPositionAddZ = 160.f;
+	DecoyAtkStrength = 30.f;
 
 	UltAtkBp = nullptr;
 	UltAtkCd = 1.0f;
@@ -128,6 +129,9 @@ void AFoodPlayer::DecoyAttack(float Value) {
 			AAttacks *Spawned = World->SpawnActor<AAttacks>(DecoyAtkBp, SpawnLocation, SpawnRotation);
 			Spawned->SetThrower(this);
 			DecoyAtkSet.insert(Spawned);
+			FVector ImpulseDirection = GetActorForwardVector();
+			ImpulseDirection.Normalize();
+			Spawned->GetCapsuleComponent()->AddImpulse(ImpulseDirection * DecoyAtkStrength, NAME_None, true);
 			DecoyAtkTimeAcc = 0.f;
 		}
 	}

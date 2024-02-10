@@ -65,6 +65,7 @@ private:
 	float DecoyAtkCd;
 	float DecoyAtkTimeAcc;
 	float DecoyAtkPositionAddZ;
+	float DecoyAtkStrength;
 	std::unordered_set<AAttacks *> DecoyAtkSet;
 
 	UPROPERTY(EditAnywhere, Category = "Attacks")

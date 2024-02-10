@@ -8,14 +8,12 @@ AAttacks::AAttacks() {
 
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
 	SetRootComponent(CapsuleComponent);
-
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	Mesh->SetupAttachment(CapsuleComponent);
-
 	CapsuleComponent->SetSimulatePhysics(true);
 	CapsuleComponent->SetGenerateOverlapEvents(false);
 	CapsuleComponent->SetNotifyRigidBodyCollision(true);
 
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+	Mesh->SetupAttachment(CapsuleComponent);
 	Mesh->SetGenerateOverlapEvents(false);
 
 	DestroyAfterMaxHit = false;
@@ -27,6 +25,8 @@ AAttacks::AAttacks() {
 
 	MaxHitCount = 1;
 	HitCount = 0;
+
+	TimeSinceLastHit = MIN_TIME_BETWEEN_HITS;
 }
 
 AAttacks::AAttacks(FName meshPath) : AAttacks() {
@@ -47,6 +47,8 @@ void AAttacks::Tick(float DeltaTime) {
 		|| (DestroyAfterMaxHit && HitCount >= MaxHitCount)) {
 		Destroy();
 	}
+
+	TimeSinceLastHit += DeltaTime;
 }
 
 UCapsuleComponent *AAttacks::GetCapsuleComponent() {
@@ -63,8 +65,10 @@ float AAttacks::GetDamage() {
 
 void AAttacks::IncrHitCount() {
 	HitCount++;
+	TimeSinceLastHit = 0.f;
 }
 
 bool AAttacks::ShouldHit() {
-	return HitCount < MaxHitCount;
+	return (HitCount < MaxHitCount) &&
+		(TimeSinceLastHit > MIN_TIME_BETWEEN_HITS);
 }

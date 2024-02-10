@@ -4,6 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "Attacks.generated.h"
 
+#define MIN_TIME_BETWEEN_HITS 0.2f
+
 class UCapsuleComponent;
 class AFoodPlayer;
 
@@ -55,4 +57,5 @@ private:
 	int MaxHitCount;
 	int HitCount;
 
+	float TimeSinceLastHit;
 };
