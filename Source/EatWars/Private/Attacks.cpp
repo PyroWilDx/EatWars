@@ -2,6 +2,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "FoodPlayer.h"
+#include "Components/BoxComponent.h"
 
 AAttacks::AAttacks() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -27,6 +28,9 @@ AAttacks::AAttacks() {
 	HitCount = 0;
 
 	TimeSinceLastHit = MIN_TIME_BETWEEN_HITS;
+
+	MultipleActorHit = false;
+	HitActors = std::unordered_map<AActor *, int>();
 }
 
 AAttacks::AAttacks(FName meshPath) : AAttacks() {
@@ -68,7 +72,34 @@ void AAttacks::IncrHitCount() {
 	TimeSinceLastHit = 0.f;
 }
 
-bool AAttacks::ShouldHit() {
-	return (HitCount < MaxHitCount) &&
-		(TimeSinceLastHit > MIN_TIME_BETWEEN_HITS);
+bool AAttacks::ShouldHit(AActor *Actor) {
+	bool Result = (HitCount < MaxHitCount);
+	Result = Result && (TimeSinceLastHit > MIN_TIME_BETWEEN_HITS);
+	Result = Result || (MultipleActorHit && (!HitActors.contains(Actor) || HitActors[Actor] < MaxHitCount));
+	if (Result) {
+		if (HitActors.contains(Actor)) HitActors[Actor]++;
+		else HitActors[Actor] = 1;
+	}
+	return Result;
+}
+
+void AAttacks::UltGrow(UBoxComponent *UltBox, float DeltaTime) {
+	FVector Scale = UltBox->GetComponentScale();
+	const double m = 6;
+	float c = 1.f + DeltaTime;
+	float sX = std::min(Scale.X * c, 1. * m);
+	float sY = std::min(Scale.Y * c, 1.4 * m);
+	float sZ = std::min(Scale.Z * c, 0.28 * m);
+	UltBox->SetWorldScale3D(FVector(sX, sY, sZ));
+	FVector Location = UltBox->GetComponentLocation();
+	float lX = std::min(Location.X * c, 0. * m);
+	float lY = std::min(Location.Y * c, 0. * m);
+	float lZ = std::min(Location.Z * c, 10.6 * m);
+	UltBox->SetWorldLocation(FVector(lX, lY, lZ));
+
+	Scale = Mesh->GetComponentScale();
+	sX = std::min(Scale.X * c, 1. * m);
+	sY = std::min(Scale.Y * c, 1. * m);
+	sZ = std::min(Scale.Z * c, 1. * m);
+	Mesh->SetWorldScale3D(FVector(sX, sY, sZ));
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Attacks.generated.h"
@@ -8,6 +9,8 @@
 
 class UCapsuleComponent;
 class AFoodPlayer;
+class AActor;
+class UBoxComponent;
 
 UCLASS()
 class EATWARS_API AAttacks : public AActor {
@@ -28,7 +31,10 @@ public:
 
 	void IncrHitCount();
 
-	bool ShouldHit();
+	bool ShouldHit(AActor *Actor);
+
+	UFUNCTION(BlueprintCallable)
+	void UltGrow(UBoxComponent *UltBox, float DeltaTime);
 
 protected:
 	virtual void BeginPlay() override;
@@ -58,4 +64,9 @@ private:
 	int HitCount;
 
 	float TimeSinceLastHit;
+
+	UPROPERTY(EditAnywhere, Category = "Property")
+	bool MultipleActorHit;
+	std::unordered_map<AActor *, int> HitActors;
+
 };

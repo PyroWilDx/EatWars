@@ -67,7 +67,7 @@ void AHuman::NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherAc
         Player->Destroy();
     } else if (OtherActor->IsA(AAttacks::StaticClass())) {
         AAttacks *Atk = Cast<AAttacks>(OtherActor);
-        if (!Atk->ShouldHit()) return;
+        if (!Atk->ShouldHit(this)) return;
         Atk->IncrHitCount();
         DamageSelf(Atk->GetDamage());
     }
