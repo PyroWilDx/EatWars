@@ -170,7 +170,14 @@ void AFoodPlayer::UltAttack(float Value) {
 	UltAtkTimeAcc += DeltaTime;
 	if (Value != 0.f) {
 		if (UltAtkTimeAcc >= UltAtkCd) {
-
+			FVector SpawnLocation = GetActorLocation();
+			FRotator SpawnRotation = FRotator::ZeroRotator;
+			AAttacks *Spawned = World->SpawnActor<AAttacks>(UltAtkBp, SpawnLocation, SpawnRotation);
+			Spawned->SetThrower(this);
+			if (EatWarsOverlay != nullptr) {
+				EatWarsOverlay->SetUltimateImgAlpha(ATK_IMG_ALPHA);
+			}
+			UltAtkTimeAcc = 0.f;
 		}
 	}
 }
