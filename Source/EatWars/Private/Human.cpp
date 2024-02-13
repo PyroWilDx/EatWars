@@ -7,6 +7,7 @@
 #include "Attacks.h"
 #include "HealthBarComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Animation/AnimMontage.h"
 
 AHuman::AHuman() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -26,6 +27,8 @@ AHuman::AHuman() {
     HealthBarComponent = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBarComponent"));
     HealthBarComponent->SetupAttachment(GetRootComponent());
 
+    DeathAnimMontage = nullptr;
+
 	Player = nullptr;
     Moving = true;
 
@@ -33,6 +36,8 @@ AHuman::AHuman() {
 
     HitMaterial = nullptr;
     HitDurationLeft = 0.f;
+
+    IsDead = false;
 }
 
 void AHuman::BeginPlay() {
@@ -47,6 +52,8 @@ void AHuman::BeginPlay() {
 
 void AHuman::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+
+    if (IsDead) return;
 
     if (HitDurationLeft > 0) {
         HitDurationLeft -= DeltaTime;
@@ -63,6 +70,8 @@ void AHuman::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 void AHuman::NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
         UPrimitiveComponent *OtherComp, FVector NormalImpulse,
         const FHitResult &SweepResult) {
+    if (IsDead) return;
+
     if (OtherActor == Player) {
         Player->Destroy();
     } else if (OtherActor->IsA(AAttacks::StaticClass())) {
@@ -75,6 +84,8 @@ void AHuman::NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherAc
 
 void AHuman::DamageSelf(float Damage) {
     if (Hp - Damage <= 0.f) {
+        IsDead = true;
+
         GetPlayer()->IncrStats(Damage, true);
         Destroy();
         return;
@@ -105,4 +116,12 @@ bool AHuman::IsMoving() {
 void AHuman::SetHp(float Value) {
     Hp = Value;
     HealthBarComponent->SetHealthPercent(Hp);
+}
+
+void AHuman::OnMontageEnded(UAnimMontage *Montage, bool bInterrupted) {
+    Destroy();
+}
+
+bool AHuman::GetIsDead() {
+    return IsDead;
 }
