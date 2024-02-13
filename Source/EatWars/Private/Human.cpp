@@ -74,15 +74,17 @@ void AHuman::NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherAc
 }
 
 void AHuman::DamageSelf(float Damage) {
-    if (Hp - Damage <= 0) {
+    if (Hp - Damage <= 0.f) {
+        GetPlayer()->IncrStats(Damage, true);
         Destroy();
         return;
     }
-    if (Damage > 0) GetMesh()->SetMaterial(0, HitMaterial);
-    if (Damage < 0) GetMesh()->SetMaterial(0, HealMaterial);
+    if (Damage > 0.f) GetMesh()->SetMaterial(0, HitMaterial);
+    if (Damage < 0.f) GetMesh()->SetMaterial(0, HealMaterial);
     HitDurationLeft = HIT_DURATION_TIME;
     SetHp(Hp - Damage);
     Hp = std::min(Hp, 1.f);
+    GetPlayer()->IncrStats(Damage, false);
 }
 
 AFoodPlayer *AHuman::GetPlayer() {

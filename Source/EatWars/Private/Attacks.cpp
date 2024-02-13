@@ -85,29 +85,32 @@ bool AAttacks::ShouldHit(AActor *Actor) {
 
 void AAttacks::UltGrow(UBoxComponent *UltBox, float DeltaTime) {
 	FVector Scale = UltBox->GetComponentScale();
-	const float s = 2.f;
+	const float s1 = 1.32f;
+	const float s2 = 1.12f;
+	const float w = 20.f;
+	const float h = 10.2f;
 	float c = 1.f + DeltaTime;
 	float sX = Scale.X;
 	float sY = Scale.Y;
-	float sZ = Scale.Z * c * s;
-	if (sZ > 0.28f * 20.f) {
-		sZ = 0.28f * 20.f;
-		sX = std::min(sX * c * s, 1.f * 20.f);
-		sY = std::min(sY * c * s, 1.4f * 20.f);
+	float sZ = Scale.Z * c * s1;
+	if (sZ > 0.28f * h) {
+		sZ = 0.28f * h;
+		sX = std::min(sX * c * s2, 1.f * w);
+		sY = std::min(sY * c * s2, 1.4f * w);
 	}
 	UltBox->SetWorldScale3D(FVector(sX, sY, sZ));
 	FVector Location = UltBox->GetComponentLocation();
-	float lZ = std::min(Location.Z * c * s, 10.6 * 20.);
+	float lZ = std::min(Location.Z * c * s1, 10.6 * h);
 	UltBox->SetRelativeLocation(FVector(0, 0, lZ));
 
 	Scale = Mesh->GetComponentScale();
 	sX = Scale.X;
 	sY = Scale.Y;
-	sZ = Scale.Z * c * s;
-	if (sZ > 1.f * 20.f) {
-		sZ = 1.f * 20.f;
-		sX = std::min(sX * c * s, 1.f * 20.f);
-		sY = std::min(sY * c * s, 1.f * 20.f);
+	sZ = Scale.Z * c * s1;
+	if (sZ > 1.f * h) {
+		sZ = 1.f * h;
+		sX = std::min(sX * c * s2, 1.f * w);
+		sY = std::min(sY * c * s2, 1.f * w);
 	}
 	Mesh->SetWorldScale3D(FVector(sX, sY, sZ));
 }

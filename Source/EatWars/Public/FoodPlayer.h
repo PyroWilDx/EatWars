@@ -28,6 +28,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RemoveDecoyAtk(AAttacks *DecoyAtk);
 
+	void IncrStats(float Damage, bool Killed);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -79,4 +81,8 @@ private:
 	TSubclassOf<AAttacks> UltAtkBp;
 	float UltAtkCd;
 	float UltAtkTimeAcc;
+
+	int HitNumber;
+	int KilledHumanCount;
+	float TotalDamage;
 };
