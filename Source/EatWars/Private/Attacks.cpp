@@ -88,7 +88,7 @@ void AAttacks::UltGrow(UBoxComponent *UltBox, float DeltaTime) {
 	const float s1 = 1.32f;
 	const float s2 = 1.12f;
 	const float w = 20.f;
-	const float h = 10.2f;
+	const float h = 9.2f;
 	float c = 1.f + DeltaTime;
 	float sX = Scale.X;
 	float sY = Scale.Y;

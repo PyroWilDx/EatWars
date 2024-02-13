@@ -9,6 +9,7 @@
 class UCapsuleComponent;
 class UHealthBarComponent;
 class AFoodPlayer;
+class UAnimMontage;
 
 UCLASS()
 class EATWARS_API AHuman : public ACharacter {
@@ -38,8 +39,16 @@ public:
 
 	void SetHp(float Value);
 
+	void OnMontageEnded(UAnimMontage *Montage, bool bInterrupted);
+
+	UFUNCTION(BlueprintCallable)
+	bool GetIsDead();
+
 protected:
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+	UAnimMontage *DeathAnimMontage;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
@@ -61,4 +70,5 @@ private:
 
 	float HitDurationLeft;
 
+	bool IsDead;
 };
