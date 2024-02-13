@@ -37,7 +37,7 @@ AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 	DecoyAtkStrength = 30.f;
 
 	UltAtkBp = nullptr;
-	UltAtkCd = 30.0f;
+	UltAtkCd = 22.0f;
 	UltAtkTimeAcc = UltAtkCd;
 	
 	HitNumber = 0;
@@ -212,4 +212,16 @@ void AFoodPlayer::IncrStats(float Damage, bool Killed) {
 		if (Killed) KilledHumanCount++;
 		TotalDamage += Damage;
 	}
+}
+
+FString AFoodPlayer::GetHitNumberString() {
+	return FString::Printf(TEXT("Total Hits : %d"), HitNumber);
+}
+
+FString AFoodPlayer::GetKilledHumanCountString() {
+	return FString::Printf(TEXT("Number of Human Killed : %d"), KilledHumanCount);
+}
+
+FString AFoodPlayer::GetTotalDamageString() {
+	return FString::Printf(TEXT("Damage Dealt : %.2f (= %d Human)"), TotalDamage, (int) TotalDamage);
 }
