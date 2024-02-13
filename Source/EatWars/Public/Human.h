@@ -27,7 +27,8 @@ public:
 		const FHitResult &SweepResult);
 
 	void DamageSelf(float Damage);
-
+	
+	UFUNCTION(BlueprintCallable)
 	AFoodPlayer *GetPlayer();
 
 	UFUNCTION(BlueprintCallable)

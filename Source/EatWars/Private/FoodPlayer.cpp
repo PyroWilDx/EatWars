@@ -31,14 +31,18 @@ AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 	AnvilAtkTimeAcc = AnvilAtkCd;
 
 	DecoyAtkBp = nullptr;
-	DecoyAtkCd = 1.0f;
+	DecoyAtkCd = 5.6f;
 	DecoyAtkTimeAcc = DecoyAtkCd;
 	DecoyAtkPositionAddZ = 160.f;
 	DecoyAtkStrength = 30.f;
 
 	UltAtkBp = nullptr;
-	UltAtkCd = 1.0f;
+	UltAtkCd = 30.0f;
 	UltAtkTimeAcc = UltAtkCd;
+	
+	HitNumber = 0;
+	KilledHumanCount = 0;
+	TotalDamage = 0.f;
 }
 
 void AFoodPlayer::BeginPlay() {
@@ -179,7 +183,7 @@ void AFoodPlayer::UltAttack(float Value) {
 				EatWarsOverlay->SetUltimateImgAlpha(ATK_IMG_ALPHA);
 			}
 			UltAtkTimeAcc = 0.f;
-			SpawnLocation.Z += 600.f;
+			SpawnLocation.Z += 300.f;
 			SetActorLocation(SpawnLocation);
 		}
 	}
@@ -200,4 +204,12 @@ AActor *AFoodPlayer::GetClosestFoodFromActor(AActor *Actor) {
 
 void AFoodPlayer::RemoveDecoyAtk(AAttacks *DecoyAtk) {
 	DecoyAtkSet.erase(DecoyAtk);
+}
+
+void AFoodPlayer::IncrStats(float Damage, bool Killed) {
+	if (Damage > 0.f) {
+		HitNumber++;
+		if (Killed) KilledHumanCount++;
+		TotalDamage += Damage;
+	}
 }
