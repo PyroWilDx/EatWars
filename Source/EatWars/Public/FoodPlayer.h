@@ -30,6 +30,15 @@ public:
 
 	void IncrStats(float Damage, bool Killed);
 
+	UFUNCTION(BlueprintCallable)
+	FString GetHitNumberString();
+
+	UFUNCTION(BlueprintCallable)
+	FString GetKilledHumanCountString();
+
+	UFUNCTION(BlueprintCallable)
+	FString GetTotalDamageString();
+
 protected:
 	virtual void BeginPlay() override;
 
