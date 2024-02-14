@@ -10,6 +10,7 @@
 class FObjectInitializer;
 class AAttacks;
 class UEatWarsOverlay;
+class USoundBase;
 
 UCLASS()
 class EATWARS_API AFoodPlayer : public ACharacter {
@@ -39,6 +40,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FString GetTotalDamageString();
 
+	void SetIsDead(bool Value);
+
+	UFUNCTION(BlueprintCallable)
+	bool GetIsDead();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -67,6 +73,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Attacks")
 	TSubclassOf<AAttacks> ThrowAtkBp;
+	UPROPERTY(EditAnywhere, Category = "Attacks")
+	USoundBase *ThrowAtkSound;
 	float ThrowAtkCd;
 	float ThrowAtkTimeAcc;
 	float ThrowAtkPositionAddZ;
@@ -75,11 +83,15 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Attacks")
 	TSubclassOf<AAttacks> AnvilAtkBp;
+	UPROPERTY(EditAnywhere, Category = "Attacks")
+	USoundBase *AnvilAtkSound;
 	float AnvilAtkCd;
 	float AnvilAtkTimeAcc;
 
 	UPROPERTY(EditAnywhere, Category = "Attacks")
 	TSubclassOf<AAttacks> DecoyAtkBp;
+	UPROPERTY(EditAnywhere, Category = "Attacks")
+	USoundBase *DecoyAtkSound;
 	float DecoyAtkCd;
 	float DecoyAtkTimeAcc;
 	float DecoyAtkPositionAddZ;
@@ -88,8 +100,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Attacks")
 	TSubclassOf<AAttacks> UltAtkBp;
+	UPROPERTY(EditAnywhere, Category = "Attacks")
+	USoundBase *UltAtkSound;
 	float UltAtkCd;
 	float UltAtkTimeAcc;
+
+	bool IsDead;
 
 	int HitNumber;
 	int KilledHumanCount;

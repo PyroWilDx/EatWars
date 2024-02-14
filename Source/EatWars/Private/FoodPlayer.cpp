@@ -4,6 +4,7 @@
 #include "Attacks.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EatWarsOverlay.h"
+#include "Kismet/GameplayStatics.h"
 
 AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 	PrimaryActorTick.bCanEverTick = true;
@@ -20,6 +21,7 @@ AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 	EatWarsOverlay = nullptr;
 
 	ThrowAtkBp = nullptr;
+	ThrowAtkSound = nullptr;
 	ThrowAtkCd = 0.2f;
 	ThrowAtkTimeAcc = ThrowAtkTimeAcc;
 	ThrowAtkPositionAddZ = 100.f;
@@ -27,22 +29,27 @@ AFoodPlayer::AFoodPlayer(const FObjectInitializer &ObjectInitializer) {
 	ThrowAtkStrength = 1600.f;
 
 	AnvilAtkBp = nullptr;
+	AnvilAtkSound = nullptr;
 	AnvilAtkCd = 1.0f;
 	AnvilAtkTimeAcc = AnvilAtkCd;
 
 	DecoyAtkBp = nullptr;
+	DecoyAtkSound = nullptr;
 	DecoyAtkCd = 5.6f;
 	DecoyAtkTimeAcc = DecoyAtkCd;
 	DecoyAtkPositionAddZ = 160.f;
 	DecoyAtkStrength = 30.f;
 
 	UltAtkBp = nullptr;
+	UltAtkSound = nullptr;
 	UltAtkCd = 22.0f;
 	UltAtkTimeAcc = UltAtkCd;
 	
 	HitNumber = 0;
 	KilledHumanCount = 0;
 	TotalDamage = 0.f;
+
+	IsDead = false;
 }
 
 void AFoodPlayer::BeginPlay() {
@@ -129,6 +136,7 @@ void AFoodPlayer::ThrowAttack(float Value) {
 			ImpulseDirection.Z = ThrowAtkImpulseZ;
 			ImpulseDirection.Normalize();
 			Spawned->GetCapsuleComponent()->AddImpulse(ImpulseDirection * ThrowAtkStrength, NAME_None, true);
+			UGameplayStatics::PlaySound2D(this, ThrowAtkSound);
 			ThrowAtkTimeAcc = 0.f;
 		}
 	}
@@ -163,6 +171,7 @@ void AFoodPlayer::DecoyAttack(float Value) {
 			if (EatWarsOverlay != nullptr) {
 				EatWarsOverlay->SetSkillImgAlpha(ATK_IMG_ALPHA);
 			}
+			UGameplayStatics::PlaySound2D(this, DecoyAtkSound);
 			DecoyAtkTimeAcc = 0.f;
 		}
 	}
@@ -182,9 +191,10 @@ void AFoodPlayer::UltAttack(float Value) {
 			if (EatWarsOverlay != nullptr) {
 				EatWarsOverlay->SetUltimateImgAlpha(ATK_IMG_ALPHA);
 			}
-			UltAtkTimeAcc = 0.f;
 			SpawnLocation.Z += 300.f;
 			SetActorLocation(SpawnLocation);
+			UGameplayStatics::PlaySound2D(this, UltAtkSound);
+			UltAtkTimeAcc = 0.f;
 		}
 	}
 }
@@ -224,4 +234,12 @@ FString AFoodPlayer::GetKilledHumanCountString() {
 
 FString AFoodPlayer::GetTotalDamageString() {
 	return FString::Printf(TEXT("Damage Dealt : %.2f (= %d Human)"), TotalDamage, (int) TotalDamage);
+}
+
+void AFoodPlayer::SetIsDead(bool Value) {
+	IsDead = Value;
+}
+
+bool AFoodPlayer::GetIsDead() {
+	return IsDead;
 }
