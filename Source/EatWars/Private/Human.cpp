@@ -73,7 +73,8 @@ void AHuman::NotifyHit(UPrimitiveComponent *OverlappedComponent, AActor *OtherAc
     if (IsDead) return;
 
     if (OtherActor == Player) {
-        Player->Destroy();
+        Player->SetIsDead(true);
+        //Player->Destroy();
     } else if (OtherActor->IsA(AAttacks::StaticClass())) {
         AAttacks *Atk = Cast<AAttacks>(OtherActor);
         if (!Atk->ShouldHit(this)) return;
